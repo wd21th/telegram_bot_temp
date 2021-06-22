@@ -96,6 +96,172 @@ theLastColumnCase = ''
 
   }
 
+  async test() {
+
+let title = 'smt'
+    const resource = {
+  properties: {
+    title,
+  },
+};
+console.log(resource);
+console.log(this.spreadsheetId);
+await googleSheets.spreadsheets.create({
+  resource,
+  fields: this.spreadsheetId,
+}, (err, spreadsheet) =>{
+  if (err) {
+    // Handle error.
+    console.log(err);
+  } else {
+    // console.log(`Spreadsheet ID: ${spreadsheet.spreadsheetId}`);
+    console.log(`Spreadsheet ID: ${this.spreadsheetId.spreadsheetId}`);
+  }
+});
+
+  }
+
+
+  async test2() {
+
+
+   /*  googleSheets.spreadsheets.batchUpdate({
+  auth: auth,
+  spreadsheetId: this.spreadsheetId,
+  resource: {
+    "requests": 
+    [
+      {
+        "deleteRange": 
+        {
+          "range": 
+          {
+            "sheetId": 0, // gid
+            "startRowIndex": 0,
+            "endRowIndex": 1
+          },
+          "shiftDimension": "ROWS"
+        }
+      }
+    ]
+  }
+}) */
+    
+    
+
+/* googleSheets.spreadsheets.batchUpdate( {
+  auth: auth,
+  spreadsheetId: this.spreadsheetId,
+  resource: {
+  "requests": [
+    {
+      "addSheet": {
+        "properties": {
+          "title": "Deposits",
+          "gridProperties": {
+            "rowCount": 20,
+            "columnCount": 12
+          },
+          "tabColor": {
+            "red": 1.0,
+            "green": 0.3,
+            "blue": 0.4
+          }
+        }
+      }
+    }
+  ]
+}
+
+}) */
+    
+    // findReplace
+    googleSheets.spreadsheets.batchUpdate( {
+  auth: auth,
+  spreadsheetId: this.spreadsheetId,
+  resource: {
+  "requests": [
+    {
+      "findReplace": {
+
+
+
+  "find": "Dias",
+  "replacement": "Miras",
+  // "matchCase": boolean,
+  // "matchEntireCell": boolean,
+  // "searchByRegex": boolean,
+  // "includeFormulas": boolean,
+
+  // Union field scope can be only one of the following:
+  /* "range": {
+    // object (GridRange)
+
+     "sheetId": 0,
+  "startRowIndex": 0,
+  "endRowIndex": 1000,
+  "startColumnIndex": 0,
+  "endColumnIndex": 20
+  }, */
+  // "sheetId": 0,
+  "allSheets": true
+  // End of list of possible types for union field scope.
+
+
+
+
+      }
+    }
+  ]
+}
+
+})
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  }
+  
+  
+   async create(title) {
+    return new Promise((resolve, reject) => {
+      // [START sheets_create]
+      const resource = {
+        properties: {
+          title,
+        },
+      };
+      googleSheets.spreadsheets.create({
+        resource,
+        fields: this.spreadsheetId,
+      }, (err, spreadsheet) =>{
+        if (err) {
+          // Handle error.
+          console.log(err);
+          // [START_EXCLUDE silent]
+          reject(err);
+          // [END_EXCLUDE]
+        } else {
+          console.log(`Spreadsheet ID: ${spreadsheet.spreadsheetId}`);
+          // [START_EXCLUDE silent]
+          resolve(spreadsheet.spreadsheetId);
+          // [END_EXCLUDE]
+        }
+      });
+      // [END sheets_create]
+    });
+  }
+  
  
   async getSheet(sheet) {
     return await googleSheets.spreadsheets.values.get({
@@ -267,6 +433,70 @@ theLastColumnCase = ''
       return await res.data.values[0]
     })
   }
+
+
+  
+  async getRowsWhere(sheet) {
+    // console.log("It works")
+    
+    var sheet = await this.getSheet(sheet)
+
+// console.log(sheet);
+
+     /* var props = await this.spreadsheets.values.get({
+      auth: auth,
+      spreadsheetId: this.spreadsheetId,
+      range: `${sheet}!1:1`,
+    }).then(async function(res) {
+      return await res.data.values[0]
+    }); */
+    
+    
+    
+    
+    
+    
+    
+    // var props = await this.getPropertiesAsObj(sheet);
+    // console.log(sheet);
+    var props = sheet.shift()
+    // console.log(props);
+    // console.log();
+
+    let arr = []
+    
+    
+    for (let i = 0; i < sheet.length; i++) {
+      var rowAsObj = {}
+      
+    
+    for (let j = 0; j < props.length; j++) {
+      const prop = props[j];
+      if (sheet[i]) {
+        rowAsObj[prop] = sheet[i][j];
+      }else {
+        rowAsObj[prop] = '';
+      }
+      
+    }
+    arr.push(rowAsObj)
+      
+      
+      // sheet[i]
+
+    }
+
+ /* return arr.filter(function(item) {
+  return item.status == 'не занят';
+}); */
+
+    return arr;
+
+    // ANCHOR getRowsWhere
+  }
+
+
+  
 
   async getRowAsObjWhere(sheet, column, value) {
 
